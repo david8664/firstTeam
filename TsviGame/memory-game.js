@@ -3,6 +3,7 @@ let openedCard = {};
 let tryCounter = 0;
 let trying = false;
 let timer = 60;
+let winning = false;
 
 function init() {
     addCardCouple('flower', 'imgs/flower.png');
@@ -73,6 +74,7 @@ function solved(firstCard, secondCard) {
 }
 
 function win() {
+    winning = true;
     let winningScreen = document.getElementById('winning-screen');
     let button = document.createElement(`button`);
     button.onclick = () => location.reload();
@@ -128,7 +130,9 @@ function updateTimer() {
 }
 setInterval(() => {
     if (timer > 0) {
-        timer--;
+        if(!winning){
+            timer--;
+        }
         updateTimer();
         if (timer === 0) {
             console.log(`you lose`);

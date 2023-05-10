@@ -17,7 +17,7 @@ body {
     align-items: center;
     gap: 8px;
     padding: 16px;
-    height: 90vh;
+    height: 70vh;
 
 }
 
@@ -48,7 +48,8 @@ h1 {
     font-weight: 300;
     font-size: 100px;
     padding: 24px;
-    margin: 20px;
+    margin-top:80px;
+    margin-bottom: -80px;
 }
 
 #winning-screen , #losing-screen{
