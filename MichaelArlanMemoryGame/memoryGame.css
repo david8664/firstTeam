@@ -1,0 +1,11 @@
+.board{
+    width: 100%;
+}
+.card{
+    display: flex;
+
+    width: 25%;
+    height: 100px;
+    color: blue;
+    margin-bottom: 10px;
+}
