@@ -1,0 +1,59 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🧠 Memory Game</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <!-- main -->
+  <!-- music -->
+  <!-- background music -->
+  <audio id="background-music" src="sound/backgroundMusic.mp3" loop></audio>
+  <button id="mute-button" onclick="toggleMute()">Mute</button>
+  <!-- correct answer sound -->
+  <audio id="correctAnswer" src="sound/correctAnswer.mp3"></audio>
+
+  <!-- clock -->
+  <div id="clock">0:00</div>
+
+  <!-- body -->
+  <h1 id="title">Memory Game By David</h1>
+
+  <!-- game instructions -->
+  <img id="exclamation-mark" src="photos/Exclamation mark.png" alt="game instructions" onclick="showOverlay()">
+  <div id="overlay">
+    <div id="popup">
+      <p> Often the simplest games are also the most entertaining, and this is certainly the case with the memory
+        game.<br><br>
+        Number of players required: 1-4 players<br><br>
+        Who can play it: Best played with younger kids.<br><br>
+        Difficulty level: according to the number of card pairs (3-20).<br><br>
+        Main goal: to be the player who matches the most cards by the end of the game.<br><br>
+        Why we love it: The memory game is very simple to pick up and play. It is also ideal for teaching young children
+        to develop their concentration and memory skills.</p><br>
+      <button onclick="hideOverlay()">OK</button>
+    </div>
+  </div>
+
+  <!-- setting-board -->
+  <div id="board">
+    <div id="setting-board">
+      <span id="cards-amount-words">Number of card pairs (3-20): </span><input type="text" id="cards-amount">
+      <br><br>
+      <img id="add-player" src="photos/Add button.jpg" alt="Add" onclick="addPlayer()">
+      <div id="players-board">
+        <div class="player-template"><label>player's name: </label><input type="text"><br></div>
+      </div>
+      <div id="error-message"></div>
+      <button id="start-button">Start</button>
+    </div>
+  </div>
+
+  <script src="memory-game.js"></script>
+</body>
+
+</html>
