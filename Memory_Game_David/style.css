@@ -276,6 +276,7 @@ input {
   font-size: 16px;
   border-radius: 5px;
   cursor: pointer;
+  margin: 10px;
 }
 
 #finish button:hover {
@@ -287,4 +288,8 @@ input {
   position: absolute;
   top: 0;
   right: 20%;
+}
+
+ul{
+  list-style: none;
 }

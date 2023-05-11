@@ -20,8 +20,8 @@ const cards = [
   "sea.jpg",
   "tiger.jpg",
 ];
-const players = [{}, {}, {}, {}];
-let turn = [1];
+let players = [];
+let turn = [1]; // [0] turn, [1] amount of players
 let intervalId;
 
 function main() {
@@ -33,15 +33,34 @@ function main() {
       // take names
       const amount = setting.amountCards;
       turn[1] = setting.playerNames.length;
+      players = [];
       setting.playerNames.forEach((name, index) => {
-        players[index].nickName = name;
-        players[index].score = 0;
+        players.push({ nickName: name, score: 0 });
       });
       createCardElement(amount);
       startClock();
       playerTurnTemplate();
     }
   });
+}
+
+// To retrieve the players from the localStorage
+function updateVictories(winnerName) {
+  const winners = JSON.parse(localStorage.getItem("winners")) || [];
+  let playerFound = false;
+
+  winners.forEach((player, index) => {
+    if (player.nickName === winnerName) {
+      winners[index].victories += 1;
+      playerFound = true;
+    }
+  });
+
+  if (!playerFound) {
+    winners.push({ nickName: winnerName, victories: 1 });
+  }
+
+  localStorage.setItem("winners", JSON.stringify(winners));
 }
 
 const addPlayer = () => {
@@ -61,25 +80,30 @@ const removePlayer = (event) => {
 
 const playerSetting = () => {
   const amountCards = document.getElementById("cards-amount").value;
-  const playerInputs = document.querySelectorAll(
-    "#players-board input[type=text]"
-  );
+  const playerInputs = document.querySelectorAll("#players-board input[type=text]");
   let playerNames = [];
   let errorMsg = "";
 
   // Validate amount of cards
-  if (isNaN(amountCards) || amountCards < 3 || amountCards > 20) {
+  if (isNaN(amountCards) || amountCards < 0 || amountCards > 20) {
+    // back to 3 card
     errorMsg = "Please enter a valid number of card pairs (3-20)";
   }
 
   // Validate player names
-  playerInputs.forEach((input) => {
+  playerInputs.forEach((input, index) => {
     const playerName = input.value.trim();
     if (playerName === "" || !/^[a-zA-Z]+$/.test(playerName)) {
       errorMsg = "Please enter a valid player name";
     }
     playerNames.push(playerName);
   });
+
+  // Check for duplicate names
+  const uniqueNames = [...new Set(playerNames)];
+  if (uniqueNames.length !== playerNames.length) {
+    errorMsg = "Please enter different names";
+  }
 
   // Display error message or return data
   const div = document.getElementById("error-message");
@@ -140,6 +164,9 @@ function onClickCard(event) {
     const audio = document.getElementById("background-music");
     audio.muted = true;
     document.getElementById("mute-button").textContent = "Unmute";
+
+    // store it in the localStorage
+    updateVictories(players[0].nickName);
 
     stopClock();
     replay();
@@ -244,27 +271,17 @@ function replay() {
   button.id = "popup-button";
   button.textContent = "Play Again";
   button.onclick = function () {
-    const audio = document.getElementById("background-music");
-    audio.muted = false;
-    document.getElementById("mute-button").textContent = "Mute";
-    container.remove();
-    allBody.remove();
-    board.innerHTML = `<div id="setting-board">
-        <span id="cards-amount-words">Number of card pairs (3-20): </span><input type="text" id="cards-amount">
-        <br><br>
-        <img id="add-player" src="photos/Add button.jpg" alt="Add" onclick="addPlayer()">
-        <div id="players-board">
-        <div class="player-template"><label>player's name: </label><input type="text"><br></div>
-        </div>
-        <div id="error-message"></div>
-        <button id="start-button">Start</button>
-        </div>`;
-    turn = [1];
-    main();
+    startGame(container, allBody);
   };
 
-  let player = players[0];
-  let winner = player.nickName;
+  const winnersButton = document.createElement("button");
+  winnersButton.id = "winners-button";
+  winnersButton.textContent = "Show Winners";
+  winnersButton.onclick = function () {
+    showWinners(container, container, allBody);
+  };
+
+  let winner = players[0].nickName;
   let points = 0;
 
   players.forEach((user) => {
@@ -284,6 +301,7 @@ function replay() {
   container.id = "finish";
   container.innerHTML = `<h2>The winner is <span class="winner">${winner}</span> with ${points} points.<br><br>Would you like to play again?</h2><br>`;
 
+  container.appendChild(winnersButton);
   container.appendChild(button);
   const allBody = document.createElement("div");
   allBody.appendChild(container);
@@ -303,4 +321,41 @@ function toggleMute() {
   }
 }
 
+function showWinners(board, container, allBody) {
+  const winners = JSON.parse(localStorage.getItem("winners"));
+
+  let content = "<ul>";
+  winners.forEach((player) => {
+    content += `<li>${player.nickName} - ${player.victories} </li>`;
+  });
+  content += "</ul>";
+  
+  board.innerHTML = content;
+  const backButton = document.createElement("button");
+  backButton.textContent = "Back";
+  backButton.onclick = function () {
+    startGame(container, allBody);
+  };
+  board.appendChild(backButton);
+}
+
+function startGame(container, allBody) {
+  const audio = document.getElementById("background-music");
+  audio.muted = false;
+  document.getElementById("mute-button").textContent = "Mute";
+  container.remove();
+  allBody.remove();
+  board.innerHTML = `<div id="setting-board">
+      <span id="cards-amount-words">Number of card pairs (3-20): </span><input type="text" id="cards-amount">
+      <br><br>
+      <img id="add-player" src="photos/Add button.jpg" alt="Add" onclick="addPlayer()">
+      <div id="players-board">
+      <div class="player-template"><label>player's name: </label><input type="text"><br></div>
+      </div>
+      <div id="error-message"></div>
+      <button id="start-button">Start</button>
+      </div>`;
+  turn = [1];
+  main();
+}
 main();
