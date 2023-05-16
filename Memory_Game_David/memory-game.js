@@ -80,13 +80,14 @@ const removePlayer = (event) => {
 
 const playerSetting = () => {
   const amountCards = document.getElementById("cards-amount").value;
-  const playerInputs = document.querySelectorAll("#players-board input[type=text]");
+  const playerInputs = document.querySelectorAll(
+    "#players-board input[type=text]"
+  );
   let playerNames = [];
   let errorMsg = "";
 
   // Validate amount of cards
-  if (isNaN(amountCards) || amountCards < 0 || amountCards > 20) {
-    // back to 3 card
+  if (isNaN(amountCards) || amountCards < 3 || amountCards > 20) {
     errorMsg = "Please enter a valid number of card pairs (3-20)";
   }
 
@@ -329,7 +330,6 @@ function showWinners(board, container, allBody) {
     content += `<li>${player.nickName} - ${player.victories} </li>`;
   });
   content += "</ul>";
-  
   board.innerHTML = content;
   const backButton = document.createElement("button");
   backButton.textContent = "Back";
