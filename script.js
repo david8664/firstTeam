@@ -16,36 +16,72 @@ const players = [
         name: "yocheved",
         id: 0,
         avatarUrl: avatars[0],
-        scores:[3,5,12]
+        scores: [3, 5, 12]
     },
     {
         name: "jacob",
         id: 1,
         avatarUrl: avatars[1],
-        scores:[1,0,5]
+        scores: [1, 0, 5]
     },
     {
         name: "aric",
         id: 2,
         avatarUrl: avatars[2],
-        scores:[5,8,2]
+        scores: [5, 8, 2]
     },
     {
         name: "beni",
         id: 3,
         avatarUrl: avatars[3],
-        scores:[5,78,43]
+        scores: [5, 78, 43]
     },
     {
         name: "Obama",
         id: 4,
         avatarUrl: avatars[4],
-        scores:[7,4,8]
+        scores: [7, 4, 8]
     },
     {
-        name: "Obama",
+        name: "Drakula",
         id: 5,
         avatarUrl: avatars[5],
-        scores:[9,67,4]
+        scores: [9, 67, 4]
     }
 ]
+
+function drawScoreTable() {
+    
+    const table = document.getElementById('scoresTable');
+
+    //creating all the rows returning them as an array full of objects
+    //every object is a row containing all the elements you need, excluding the rank:
+    const newRows = players.map((player, index) => {
+        const nameCell = document.createElement("td");
+        nameCell.innerText = player.name;
+        const tsviScore = document.createElement("td");
+        tsviScore.innerText = player.scores[0];
+        const netanelScore = document.createElement("td");
+        netanelScore.innerText = player.scores[1];
+        const davidScore = document.createElement("td");
+        davidScore.innerText = player.scores[2];
+        const sumScoreElement = document.createElement("td");
+        const sumScore = player.scores.reduce((a, b) => a + b)
+        sumScoreElement.innerText = sumScore;
+        return { nameCell, tsviScore, netanelScore, davidScore, sumScoreElement, sumScore };
+    });
+
+    //sorting the new array acording to the sum of the scores:
+    newRows.sort((a, b) => b.sumScore - a.sumScore);
+
+    //creating the rank element for each row and pushing it to the DOM:
+    newRows.forEach((v, i) => {
+        const newRow = document.createElement("tr");
+        table.appendChild(newRow);
+        const rank = document.createElement("td");
+        rank.innerText = i + 1;
+        newRow.append(rank, v.nameCell, v.tsviScore, v.netanelScore, v.davidScore, v.sumScoreElement);
+    })
+}
+
+drawScoreTable();
