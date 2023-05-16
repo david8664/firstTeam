@@ -14,13 +14,13 @@ const avatars = [
 //players array.
 //containing inner scores array in this games order: tsvi's,netanel's,david's.
 const players = getSavedPlayers();
-let currentPlayer = getSavedCurrentPlayer();
+let currentPlayerId = getSavedCurrentPlayerId();
 
 function init() {
     drawScoreTable();
     drawCurrentPlayerWidget();
     localStorage.setItem("players", JSON.stringify(players))
-    localStorage.setItem("currentPlayer", JSON.stringify(currentPlayer))
+    localStorage.setItem("currentPlayerId", JSON.stringify(currentPlayerId))
     setPopup();
 }
 init()
@@ -67,9 +67,9 @@ function getSavedPlayers() {
     ]
 }
 
-function getSavedCurrentPlayer() {
-    const savedCurrentPlayer = JSON.parse(localStorage.getItem("currentPlayer"));
-    return savedCurrentPlayer || players[0];
+function getSavedCurrentPlayerId() {
+    const savedCurrentPlayerId = JSON.parse(localStorage.getItem("currentPlayerId"));
+    return savedCurrentPlayerId || 0;
 }
 
 function drawScoreTable() {
@@ -109,11 +109,11 @@ function drawScoreTable() {
 function drawCurrentPlayerWidget() {
     const container = document.getElementById('currentPlayerWidget');
     const avatarElement = document.createElement('img');
-    avatarElement.src = currentPlayer.avatarUrl;
+    avatarElement.src = players[currentPlayerId].avatarUrl;
     const nameElement = document.createElement('h4');
-    nameElement.innerText = currentPlayer.name;
+    nameElement.innerText = players[currentPlayerId].name;
     const scoreElement = document.createElement('div');
-    scoreElement.innerText = `score: ${currentPlayer.scores.reduce((a, b) => a + b)}`;
+    scoreElement.innerText = `score: ${players[currentPlayerId].scores.reduce((a, b) => a + b)}`;
     const PlayerDescriptionContainer = document.createElement('div');
     PlayerDescriptionContainer.id = 'PlayerDescriptionContainer';
     PlayerDescriptionContainer.append(nameElement, scoreElement);
@@ -134,7 +134,7 @@ function setPopup() {
         playerNameElement.innerText = v.name;
         playerContainer.append(playerImgElement, playerNameElement);
         playerContainer.onclick = () => {
-            changeCurrentPlayer(v.id)
+            changeCurrentPlayerId(v.id)
             popupElement.style.display = 'none';
         }
         return playerContainer;
@@ -153,15 +153,25 @@ function popPopup() {
 
 function updateCurrentPlayerWidget() {
     const avatarElement = document.querySelector('#currentPlayerWidget>img');
-    avatarElement.src = currentPlayer.avatarUrl;
+    avatarElement.src = players[currentPlayerId].avatarUrl;
     const nameElement = document.querySelector('#PlayerDescriptionContainer>h4');
-    nameElement.innerText = currentPlayer.name;
+    nameElement.innerText = players[currentPlayerId].name;
     const scoreElement = document.querySelector('#PlayerDescriptionContainer>div');
-    scoreElement.innerText = `score: ${currentPlayer.scores.reduce((a, b) => a + b)}`;
+    scoreElement.innerText = `score: ${players[currentPlayerId].scores.reduce((a, b) => a + b)}`;
 }
 
-function changeCurrentPlayer(newPlayerId){
-    currentPlayer = players[newPlayerId];
-    localStorage.setItem("currentPlayer",JSON.stringify(currentPlayer))
+function changeCurrentPlayerId(newPlayerId) {
+    currentPlayerId = newPlayerId;
+    localStorage.setItem("currentPlayerId", JSON.stringify(currentPlayerId))
     updateCurrentPlayerWidget();
+}
+
+// this is the function you need to call in your game when the player win.
+// its here just for reference.
+// we can try to export it to all the games but I didn't tried it yet.
+function countTheWin() {
+    const players = JSON.parse(localStorage.getItem('players'));
+    const currentPlayerId = JSON.parse(localStorage.getItem('currentPlayerId'));
+    players[currentPlayerId].scores[myGameId] = players[currentPlayerId].scores[myGameId] + 1;
+    localStorage.setItem('players', JSON.stringify(players));
 }
