@@ -4,6 +4,7 @@ let tryCounter = 0;
 let trying = false;
 let timer = 60;
 let winning = false;
+const myGameId = 0;
 
 function init() {
     addCardCouple('flower', 'imgs/flower.png');
@@ -82,6 +83,7 @@ function win() {
     winningScreen.append(button);
     button.append(document.createTextNode(`PLAY AGAIN`));
     winningScreen.style.visibility = `visible`;
+    countTheWin();
 }
 function lose() {
     let losingScreen = document.getElementById('losing-screen');
@@ -130,7 +132,7 @@ function updateTimer() {
 }
 setInterval(() => {
     if (timer > 0) {
-        if(!winning){
+        if (!winning) {
             timer--;
         }
         updateTimer();
@@ -140,3 +142,11 @@ setInterval(() => {
         };
     };
 }, 1000)
+
+
+function countTheWin() {
+    const players = JSON.parse(localStorage.getItem('players'));
+    const currentPlayerId = JSON.parse(localStorage.getItem('currentPlayerId'));
+    players[currentPlayerId].scores[myGameId] = players[currentPlayerId].scores[myGameId] + 1;
+    localStorage.setItem('players', JSON.stringify(players));
+}
