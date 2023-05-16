@@ -1,4 +1,5 @@
 let playerCounter = 6;
+
 const avatars = [
     "https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436178.jpg?w=826&t=st=1684236472~exp=1684237072~hmac=9896da988c23afd90461b81afa500ebbae4f5902364bc421edef2af72e41b68d",
     "https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg?w=826&t=st=1684236425~exp=1684237025~hmac=2e6b4da25fd2a82024a7056d8b33fb33bd054f525c22a386db962141bde8a77c",
@@ -10,51 +11,66 @@ const avatars = [
     "https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses-green-hair_23-2149436201.jpg?w=740&t=st=1684236480~exp=1684237080~hmac=44b52924f4bdd7d372a7d8aa4b6df2056db7e6f081c1cd81b5eff4681c4bf463",
     "https://img.freepik.com/free-psd/3d-illustration-person-with-glasses_23-2149436185.jpg?w=826&t=st=1684236431~exp=1684237031~hmac=2f53d17b3322147784ccb4d7272876a3e39646b828b7dd049d7d3ec538faeb95"
 ]
-
-function getSavedPlayers(){
-    const savedPlayers = localStorage.getItem("players");
-    return savedPlayers || [
-    {
-        name: "yocheved",
-        id: 0,
-        avatarUrl: avatars[0],
-        scores: [3, 5, 12]
-    },
-    {
-        name: "jacob",
-        id: 1,
-        avatarUrl: avatars[1],
-        scores: [1, 0, 5]
-    },
-    {
-        name: "aric",
-        id: 2,
-        avatarUrl: avatars[2],
-        scores: [5, 8, 2]
-    },
-    {
-        name: "beni",
-        id: 3,
-        avatarUrl: avatars[3],
-        scores: [5, 78, 43]
-    },
-    {
-        name: "Obama",
-        id: 4,
-        avatarUrl: avatars[4],
-        scores: [7, 4, 8]
-    },
-    {
-        name: "Drakula",
-        id: 5,
-        avatarUrl: avatars[5],
-        scores: [9, 67, 4]
-    }
-]
-}
 //players array.
 //containing inner scores array in this games order: tsvi's,netanel's,david's.
 const players = getSavedPlayers();
+let currentPlayer = getSavedCurrentPlayer();
+
+function init() {
+    drawScoreTable();
+    drawCurrentPlayerWidget();
+    localStorage.setItem("players", JSON.stringify(players))
+    localStorage.setItem("currentPlayer", JSON.stringify(currentPlayer))
+    setPopup();
+}
+init()
+
+function getSavedPlayers() {
+    const savedPlayers = JSON.parse(localStorage.getItem("players"));
+    return savedPlayers || [
+        {
+            name: "yocheved",
+            id: 0,
+            avatarUrl: avatars[0],
+            scores: [3, 5, 12]
+        },
+        {
+            name: "jacob",
+            id: 1,
+            avatarUrl: avatars[1],
+            scores: [1, 0, 5]
+        },
+        {
+            name: "aric",
+            id: 2,
+            avatarUrl: avatars[2],
+            scores: [5, 8, 2]
+        },
+        {
+            name: "beni",
+            id: 3,
+            avatarUrl: avatars[3],
+            scores: [5, 78, 43]
+        },
+        {
+            name: "Obama",
+            id: 4,
+            avatarUrl: avatars[4],
+            scores: [7, 4, 8]
+        },
+        {
+            name: "Drakula",
+            id: 5,
+            avatarUrl: avatars[5],
+            scores: [9, 67, 4]
+        }
+    ]
+}
+
+function getSavedCurrentPlayer() {
+    const savedCurrentPlayer = JSON.parse(localStorage.getItem("currentPlayer"));
+    return savedCurrentPlayer || players[0];
+}
 
 function drawScoreTable() {
 
@@ -90,6 +106,62 @@ function drawScoreTable() {
     })
 }
 
-drawScoreTable();
+function drawCurrentPlayerWidget() {
+    const container = document.getElementById('currentPlayerWidget');
+    const avatarElement = document.createElement('img');
+    avatarElement.src = currentPlayer.avatarUrl;
+    const nameElement = document.createElement('h4');
+    nameElement.innerText = currentPlayer.name;
+    const scoreElement = document.createElement('div');
+    scoreElement.innerText = `score: ${currentPlayer.scores.reduce((a, b) => a + b)}`;
+    const PlayerDescriptionContainer = document.createElement('div');
+    PlayerDescriptionContainer.id = 'PlayerDescriptionContainer';
+    PlayerDescriptionContainer.append(nameElement, scoreElement);
+    const switchPlayerButton = document.createElement('button');
+    switchPlayerButton.innerHTML = `<i class="fa fa-exchange" aria-hidden="true"></i>`;
+    switchPlayerButton.onclick = popPopup;
+    container.append(avatarElement, PlayerDescriptionContainer, switchPlayerButton);
+}
 
-localStorage.setItem("players",JSON.stringify(players))
+function setPopup() {
+    const popupElement = document.getElementById('playerSelection');
+    const playersElements = players.map(v => {
+        const playerContainer = document.createElement('div');
+        playerContainer.classList += 'choosePlayerButton';
+        const playerImgElement = document.createElement('img');
+        playerImgElement.src = v.avatarUrl;
+        const playerNameElement = document.createElement('div');
+        playerNameElement.innerText = v.name;
+        playerContainer.append(playerImgElement, playerNameElement);
+        playerContainer.onclick = () => {
+            changeCurrentPlayer(v.id)
+            popupElement.style.display = 'none';
+        }
+        return playerContainer;
+    })
+    const exitButton = document.createElement('button');
+    exitButton.onclick = () => { popupElement.style.display = 'none' };
+    exitButton.id = 'popupExitButton';
+    exitButton.innerHTML = `<i class="fa fa-times" aria-hidden="true"></i>`;
+    popupElement.append(...playersElements, exitButton);
+
+}
+function popPopup() {
+    const popupElement = document.getElementById('playerSelection');
+    popupElement.style.display = 'flex';
+}
+
+function updateCurrentPlayerWidget() {
+    const avatarElement = document.querySelector('#currentPlayerWidget>img');
+    avatarElement.src = currentPlayer.avatarUrl;
+    const nameElement = document.querySelector('#PlayerDescriptionContainer>h4');
+    nameElement.innerText = currentPlayer.name;
+    const scoreElement = document.querySelector('#PlayerDescriptionContainer>div');
+    scoreElement.innerText = `score: ${currentPlayer.scores.reduce((a, b) => a + b)}`;
+}
+
+function changeCurrentPlayer(newPlayerId){
+    currentPlayer = players[newPlayerId];
+    localStorage.setItem("currentPlayer",JSON.stringify(currentPlayer))
+    updateCurrentPlayerWidget();
+}
