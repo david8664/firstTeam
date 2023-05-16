@@ -11,7 +11,9 @@ const avatars = [
     "https://img.freepik.com/free-psd/3d-illustration-person-with-glasses_23-2149436185.jpg?w=826&t=st=1684236431~exp=1684237031~hmac=2f53d17b3322147784ccb4d7272876a3e39646b828b7dd049d7d3ec538faeb95"
 ]
 
-const players = [
+function getSavedPlayers(){
+    const savedPlayers = localStorage.getItem("players");
+    return savedPlayers || [
     {
         name: "yocheved",
         id: 0,
@@ -49,9 +51,13 @@ const players = [
         scores: [9, 67, 4]
     }
 ]
+}
+//players array.
+//containing inner scores array in this games order: tsvi's,netanel's,david's.
+const players = getSavedPlayers();
 
 function drawScoreTable() {
-    
+
     const table = document.getElementById('scoresTable');
 
     //creating all the rows returning them as an array full of objects
@@ -85,3 +91,5 @@ function drawScoreTable() {
 }
 
 drawScoreTable();
+
+localStorage.setItem("players",JSON.stringify(players))
