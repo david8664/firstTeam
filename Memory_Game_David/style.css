@@ -6,7 +6,9 @@
 }
 
 body {
-  background-image: url("photos/wood.jpg");
+  background-image: url("./photos/wood.jpg");
+  background-attachment: fixed;
+  background-size: cover;
   direction: ltr;
 }
 

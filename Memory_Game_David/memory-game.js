@@ -1,24 +1,24 @@
 const cards = [
-  "bird1.jpg",
-  "bird2.jpg",
-  "cat1.jpg",
-  "cat2.jpg",
-  "dolphin.jpg",
-  "dove.jpg",
-  "elephant1.jpg",
-  "elephant2.jpg",
-  "flowers.jpg",
-  "fox1.jpg",
-  "fox2.jpg",
-  "fox3.jpg",
-  "iceland.jpg",
-  "kingfisher.jpg",
-  "lion1.jpg",
-  "lion2.jpg",
-  "owl.jpg",
-  "parrot.jpg",
-  "sea.jpg",
-  "tiger.jpg",
+  "AfricanLion.avif",
+  "Cheetah.avif",
+  "Cobra.avif",
+  "Cougar.avif",
+  "GoldenEagle.avif",
+  "Gorilla.avif",
+  "GreatWhiteShark.avif",
+  "GreyWolf.avif",
+  "GrizzlyBear.avif",
+  "Hippopotamus.avif",
+  "HumpbackWhale.avif",
+  "KomodoDragon.avif",
+  "PolarBear.avif",
+  "Raccoon.avif",
+  "RedFox.avif",
+  "SaltwaterCrocodile.avif",
+  "Shark.avif",
+  "SiberianTiger.vif.avif",
+  "SnowLeopard.avif",
+  "SpottedHyena.avif",
 ];
 let players = [];
 let turn = [1]; // [0] turn, [1] amount of players
@@ -136,7 +136,7 @@ const createCardElement = (cardAmount) => {
       (card) => `\
     <div class="cards">\
     <img class="back-card" src="photos/question-mark.jpg" alt="back card">\
-    <img class="face-card" src="photos/${card}" alt="face-card">\
+    <img class="face-card" src="photos/cards/${card}" alt="face-card">\
     </div>`
     )
     .join("");
